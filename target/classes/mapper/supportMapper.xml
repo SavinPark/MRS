@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mapper.supportMapper">
+
+	<!-- 조회  -->
+    <select id="selectSupport" resultType="SupportVO">
+        SELECT support_idx,
+        	   support_type,
+        	   employee_id,
+        	   customer_id,
+        	   support_date,
+        	   support_purpose,
+        	   support_number_of_files
+          FROM support
+    </select>
+    
+    <!-- support_idx 최댓값 조회 -->
+    <select id="maxSupportIdx" resultType="int">
+    	SELECT MAX(support_idx) 
+    	  FROM support
+    </select>
+    
+    <!-- 조회 10개씩 -->
+    <select id="selectTenSupport" resultType="SupportVO" parameterType="int">
+    	SELECT *
+    	  FROM support
+    	 LIMIT #{page}, 10
+    </select>
+    
+    <!-- 조회 (support_idx) -->
+    <select id="selectSprtByIdx" resultType="SupportVO" parameterType="int">
+    	SELECT *
+    	  FROM support
+    	 WHERE support_idx = #{support_idx}
+    </select>
+    
+	<!-- 등록 -->
+	<insert id="insertSupport" parameterType="SupportVO"> 
+		INSERT INTO support (support_idx, support_type, employee_id, customer_id, support_date, support_purpose, support_number_of_files )
+		VALUES ( #{support_idx}, #{support_type}, #{employee_id}, #{customer_id}, #{support_date}, #{support_purpose}, #{support_number_of_files} )
+	</insert>
+	
+	<!-- 삭제 -->
+    <delete id="deleteSupport" parameterType="int">
+    	DELETE FROM support
+    	WHERE support_idx = #{support_idx}
+    </delete>
+    
+    <!-- 수정 -->
+    <update id="updateSupport" parameterType="java.util.Map">
+		UPDATE support
+		   SET support_type = #{ support_type },
+		       employee_id = #{ employee_id },
+		       customer_id = #{ customer_id },
+		       support_date = #{ support_date },
+		       support_purpose = #{ support_purpose },
+		       support_number_of_files = #{ support_number_of_files }
+		WHERE support_idx = #{support_idx}
+	</update>
+    
+</mapper>

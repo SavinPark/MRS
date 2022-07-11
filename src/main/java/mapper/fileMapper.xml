@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mapper.fileMapper">
+
+	<!-- 조회 -->
+    <select id="selectFile" resultType="FileVO">
+        SELECT 
+        	file_idx, 
+        	support_idx,
+        	file_original_name, 
+        	file_save_name, 
+        	file_size, 
+        	file_extension
+        FROM 
+        	file
+    </select>
+    
+    <!-- 조회 (support_idx) -->
+     <select id="selectFileIdxOrinameBySprtIdx" parameterType="int" resultType="FileVO">
+        SELECT *
+          FROM file
+         WHERE support_idx = #{support_idx}
+    </select>
+    
+    <!-- 조회 (file_idx) -->
+    <select id="selectFileByIdx" parameterType="int" resultType="FileVO">
+        SELECT *
+          FROM file
+         WHERE file_idx = #{ file_idx }
+    </select>
+    
+    <!-- 등록 -->
+    <insert id="insertFile" parameterType="FileVO">
+    	INSERT INTO file ( support_idx, file_original_name, file_save_name, file_size, file_extension )
+    	     VALUES ( #{support_idx}, #{file_original_name}, #{file_save_name}, #{file_size}, #{file_extension} )
+    </insert>
+
+    
+    <!-- 삭제 (support_idx) -->
+    <delete id="deleteFile" parameterType="int">
+    	DELETE FROM file
+    	      WHERE support_idx = #{support_idx}
+    </delete>
+    
+    <!-- 삭제 (file_idx) -->
+    <delete id="deleteFileByFileIdx" parameterType="int">
+    	DELETE FROM file
+    	      WHERE file_idx = #{file_idx}
+    </delete>
+    
+</mapper>

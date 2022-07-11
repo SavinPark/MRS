@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mapper.customerMapper">
+
+	<!-- 조회 -->
+    <select id="selectCustomer" resultType="CustomerVO">
+        SELECT customer_id, 
+        	   customer_company,
+        	   customer_department, 
+        	   customer_manager, 
+        	   customer_email, 
+        	   customer_contact 
+          FROM customer
+    </select>
+    
+    <!-- 행의 개수 -->
+    <select id="countCustomer" resultType="int">
+    	SELECT COUNT(*)
+    	  FROM customer
+    </select>
+    
+    <!-- 조회 (10개) -->
+    <select id="selectTenCustomer" resultType="CustomerVO" parameterType="int">
+    	SELECT *
+    	  FROM customer
+    	 LIMIT #{page}, 10
+    </select>
+    
+    <!-- 조회 (customer_id) -->
+    <select id="selectCustById" resultType="CustomerVO" parameterType="int">
+    	SELECT *
+          FROM customer
+         WHERE customer_id = #{customer_id}
+    </select>
+    
+    <!-- customer_company 조회 | 중복 X -->
+	<select id="selectCustCompany" resultType="String">
+		SELECT DISTINCT customer_company
+          FROM customer
+	</select>
+    <!-- customer_department 조회 (customer_company) | 중복 X  -->
+    <select id="selectCustDepartByCompany" resultType="String" parameterType="String">
+    	SELECT DISTINCT customer_department
+    	  FROM customer
+    	 WHERE customer_company = #{customer_company}
+    </select>
+    <!-- customer_manager조회 (customer_company, customer_department)  -->
+  	<select id="selectCustManagerByCompDepart" resultType="CustomerVO" parameterType="CustomerVO" >
+  		SELECT customer_manager
+    	  FROM customer
+    	 WHERE customer_company = #{customer_company} AND customer_department = #{customer_department}
+  	</select>
+  	<!-- customer_id조회 (customer_company, customer_department, customer_manager)  -->
+  	<select id="selectCustIDByCompDprtMngr" resultType="int" parameterType="CustomerVO" >
+  		SELECT customer_id
+    	  FROM customer
+    	 WHERE customer_company = #{customer_company} AND customer_department = #{customer_department} AND customer_manager = #{customer_manager}
+  	</select>
+    
+    <!--등록 -->
+    <insert id="insertCustomer" parameterType="java.util.Map">
+    	INSERT INTO customer ( customer_company, customer_department, customer_manager, customer_email, customer_contact )
+    	VALUES ( #{ customer_company }, #{ customer_department }, #{ customer_manager }, #{ customer_email }, #{ customer_contact } )
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="deleteCustomer" parameterType="int">
+    	DELETE FROM customer
+    	WHERE customer_id = #{customer_id}
+    </delete>
+    
+    <!-- 수정 -->
+	<update id="updateCustomer" parameterType="java.util.Map">
+		UPDATE customer
+		   SET customer_company = #{ customer_company },
+		       customer_department = #{ customer_department },
+		       customer_manager = #{ customer_manager },
+		       customer_email = #{ customer_email },
+		       customer_contact = #{ customer_contact }
+		WHERE customer_id = #{customer_id}
+	</update>
+	
+</mapper>

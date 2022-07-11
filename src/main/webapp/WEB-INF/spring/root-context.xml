@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+		
+	<!-- MySQL dataSource -->
+    <bean id="dataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <!-- <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.Driver.Spy"></property>  -->
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+        <!-- value="jdbc:log4jdbc://127.0.0.1:3306/mrs?useSSL=false&amp;serverTimezone=UTC"> -->
+        <property name="url"
+            value="jdbc:mysql://127.0.0.1:3306/mrs?useSSL=false&amp;allowPublicKeyRetrieval=true">
+        </property>
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
+    </bean>        
+    
+    <!-- Mybatis SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+        <property name="mapperLocations" value="classpath:/mapper/**/**Mapper.xml"></property>
+    </bean>
+    
+    <!-- Mybatis SqlSessionTemplate -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    	<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+    </bean>
+    
+    
+    <!-- 파일 업로드 객체 -->
+    <!-- 10 * 1024 * 1024 = 10485760 (10MB) -->
+    <bean id="multipartResolver" 
+    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<!-- [참고] https://sinna94.tistory.com/entry/Spring-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C-%ED%95%98%EA%B8%B0 -->
+        <property name="maxUploadSize" value="10485760"></property>
+    </bean>
+    <!-- [참고] https://melonpeach.tistory.com/51?category=806570
+         [참고] https://joalog.tistory.com/48 -->
+
+
+	<!-- 파일 다운로드 -->
+	<!-- 외부 경로를 찾는 방식은 동작하지 않음(servlet-context.xml) -->
+	<!--bean id="downloadViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0"></property>
+	</bean-->
+	
+    
+	<mvc:annotation-driven>
+	<!-- 
+		<mvc:argument-resolvers>
+			<bean class="org.springframework.mobile.device.DeviceWebArgumentResolver" />
+		</mvc:argument-resolvers> 
+    -->
+	</mvc:annotation-driven>
+	
+    <!-- Bean 등록 -->
+    <context:component-scan base-package="dto"></context:component-scan>
+    <context:component-scan base-package="dao"></context:component-scan>
+    <context:component-scan base-package="service"></context:component-scan>
+    <context:component-scan base-package="controller"></context:component-scan>
+    <!-- [참고] https://melonpeach.tistory.com/51?category=806570 -->
+    <!-- <context:component-scan base-package="util"></context:component-scan>-->
+    
+ 
+</beans>

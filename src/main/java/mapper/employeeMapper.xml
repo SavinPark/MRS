@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mapper.employeeMapper">
+ 
+ 	<!-- 조회  -->
+    <select id="selectEmployee" resultType="EmployeeVO">
+        SELECT *
+       	  FROM employee
+    </select>
+    
+    <!-- 총 행의 개수 -->
+    <select id="countEmployee" resultType="int">
+    	SELECT COUNT(*)
+    	  FROM employee
+    </select>
+    
+    <!-- 조회 (한 페이지에 10건) -->
+    <select id="selectTenEmployee" resultType="EmployeeVO" parameterType="int">
+   		SELECT *
+       	  FROM employee
+       	 LIMIT #{page}, 10
+    </select>
+    
+    <!-- 조회 (employee_id) -->
+    <select id="selectEmpById" resultType="employeeVO" parameterType="String">
+    	SELECT *
+    	  FROM employee
+    	 WHERE employee_id = #{employee_id}
+    </select>
+    
+    <!-- 조회 (employee_id, employee_password) -->
+    <select id="selectEmpByIdPw" resultType="employeeVO">
+        SELECT *
+       	  FROM employee
+       	 WHERE employee_id = #{employee_id} AND employee_password = #{employee_password}
+    </select>
+    
+    <!-- 조회 (employee_id, employee_manager) -->
+	<select id="selectEmpIdAndManager" resultType="employeeVO">
+        SELECT employee_id,
+               employee_manager
+       	  FROM employee
+    </select>
+    
+	<!-- 등록 -->
+    <insert id="insertEmployee" parameterType="java.util.Map">
+    	INSERT INTO employee ( employee_id, employee_password, employee_department, employee_manager, employee_email, employee_contact, employee_last_access_date )
+    	     VALUES ( #{ employee_id }, #{ employee_password }, #{ employee_department }, #{ employee_manager }, #{ employee_email }, #{ employee_contact }, NOW() )
+    </insert>
+    
+    <!-- 삭제 -->
+    <!-- 계정 삭제 | 탈퇴 -->
+    <delete id="deleteEmployee" parameterType="java.util.Map">
+    	DELETE FROM employee
+    	      WHERE employee_id = #{employee_id}
+    </delete>
+    
+    <!-- 내 정보 수정 (아이디 중복 확인)
+    <select id="empIdCheck" parameterType="java.util.Map">
+    	SELECT 
+        	employee_id
+       	FROM 
+       		employee
+       	WHERE employee_id = #{employee_id}
+    </select>
+     -->
+    
+    <!-- 내 정보 수정 (저장) -->
+    <update id="updateEmployee" parameterType="java.util.Map">
+		UPDATE employee
+		   SET employee_password = #{ employee_password },
+		       employee_manager = #{ employee_manager },
+		       employee_email = #{ employee_email },
+		       employee_contact = #{ employee_contact },
+		       employee_last_access_date = NOW()
+		 WHERE employee_id = #{employee_id}
+	</update>
+
+</mapper>

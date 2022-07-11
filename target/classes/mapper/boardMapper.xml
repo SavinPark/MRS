@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mapper.boardMapper">
+ 
+ 	<!-- 조회 -->
+    <select id="selectBoard" resultType="BoardVO">
+        SELECT *
+       	  FROM board
+    </select>
+    
+    <!-- 행의 개수 -->
+    <select id="countBoard" resultType="int">
+    	SELECT COUNT(*)
+    	  FROM board
+    </select>
+    
+    <!-- 조회 (10개) -->
+    <select id="selectTenBoard" resultType="BoardVO" parameterType="int">
+    	SELECT *
+    	  FROM board
+   	   	 LIMIT #{page}, 10
+    </select>
+    
+    
+    <!-- 조회 (support_idx) -->
+    <select id="selectBrdBySprtIdx" resultType="BoardVO" parameterType="int">
+    	SELECT *
+    	  FROM board
+    	 WHERE support_idx = #{support_idx}
+    </select>
+    
+    <!-- 등록 -->
+    <insert id="insertBoard" parameterType="BoardVO">
+    	INSERT INTO board ( board_idx, support_idx, board_title, board_comment, board_date )
+    	VALUES ( #{support_idx}, #{support_idx}, #{board_title}, #{board_comment}, NOW() )
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="deleteBoard" parameterType="int">
+    	DELETE FROM board
+    	WHERE support_idx = #{support_idx}
+    </delete>
+    
+    <!-- 수정 -->
+	<update id="updateBoard" parameterType="java.util.Map">
+		UPDATE board
+		   SET board_title = #{ board_title },
+		       board_comment = #{ board_comment },
+		       board_date = NOW() 
+		 WHERE board_idx = #{board_idx}
+	</update>
+    
+</mapper>
